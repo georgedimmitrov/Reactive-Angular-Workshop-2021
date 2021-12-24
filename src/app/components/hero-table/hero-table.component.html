@@ -1,27 +1,55 @@
-<div class="tool-bar">
-    <span class="search-tool">
-        <label for="herosearch">Search: </label>
-        <input name="herosearch" />
-    </span>
-    <span class="page-tool">
-        <label>Page ? of ? : </label>
-        <span class="buttons">
-            <button class="prev">Prev</button>
-            <button class="next">Next</button>
+<ng-container *ngIf="vm$ | async as vm">
+    Show Spinner: {{ vm.loading }}
+    <br />
+
+    <div class="tool-bar">
+        <span class="search-tool">
+            <label for="herosearch">Search: </label>
+            <input
+                name="herosearch"
+                [value]="vm.search"
+                (input)="doSearch($event)"
+            />
         </span>
-    </span>
-    <span class="result-tool">
-        <label>Show Results: </label>
-        <span class="buttons">
-            <button *ngFor="let limit of hero.limits">
-                {{ limit }}
-            </button>
+        <span class="page-tool">
+            <label>Page {{ vm.page }} of {{ vm.totalPages }} : </label>
+            <span class="buttons">
+                <button
+                    class="prev"
+                    [disabled]="vm.disablePrev"
+                    (click)="movePageBy(-1)"
+                >
+                    Prev
+                </button>
+                <button
+                    class="next"
+                    (click)="movePageBy(1)"
+                    [disabled]="vm.disableNext"
+                >
+                    Next
+                </button>
+            </span>
         </span>
-    </span>
-    <span class="total-tool">
-        <label>Total Results: ???</label>
-    </span>
-</div>
-<div class="table-content">
-    <rx-hero-badge *ngFor="let hero of heroes" [hero]="hero"></rx-hero-badge>
-</div>
+        <span class="result-tool">
+            <label>Show Results: </label>
+            <span class="buttons">
+                <button
+                    *ngFor="let limit of hero.limits"
+                    (click)="setLimit(limit)"
+                    [disabled]="vm.limit === limit"
+                >
+                    {{ limit }}
+                </button>
+            </span>
+        </span>
+        <span class="total-tool">
+            <label>Total Results: {{ vm.totalResults }}</label>
+        </span>
+    </div>
+    <div class="table-content">
+        <rx-hero-badge
+            *ngFor="let hero of vm.heroes"
+            [hero]="hero"
+        ></rx-hero-badge>
+    </div>
+</ng-container>
